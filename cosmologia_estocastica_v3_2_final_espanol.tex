@@ -1,0 +1,569 @@
+\documentclass[11pt,a4paper]{article}
+
+%------------------------------------------------
+% PAQUETES
+%------------------------------------------------
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{authblk}
+\usepackage{physics}
+\usepackage{mathtools}
+
+\hypersetup{
+    colorlinks = true,
+    linkcolor = blue,
+    citecolor = blue,
+    urlcolor  = blue
+}
+
+%------------------------------------------------
+% MACROS
+%------------------------------------------------
+\newcommand{\Hzero}{H_0}
+\newcommand{\Omegam}{\Omega_{\mathrm{m}}}
+\newcommand{\Omegal}{\Omega_{\Lambda}}
+\newcommand{\wde}{w_{\mathrm{DE}}}
+\newcommand{\TGH}{T_{\mathrm{GH}}}
+\newcommand{\Mpl}{M_{\mathrm{Pl}}}
+% \dd ya está definido por physics package
+\newcommand{\Rmem}{R}
+
+%------------------------------------------------
+% TÍTULO / AUTORES
+%------------------------------------------------
+
+\title{\textbf{Cosmología Estocástica con Memoria Finita:}\\
+Un Modelo de Energía Oscura Log-Oscilatorio con Corte Geométrico de Ruido}
+
+\author[1]{Ernesto Cisneros Cino%
+\thanks{Investigador independiente. 
+Web: \url{https://ernestocisneros.art/cosmology-physics} $\,|\,$ 
+Código: \url{https://github.com/cisnerosmusic} $\,|\,$
+E-mail: \texttt{info@impulses.online}}}
+
+\affil[1]{Miami, Florida, EE.UU.}
+
+\date{Versión 3.2 --- Noviembre 2025}
+
+\begin{document}
+
+\maketitle
+
+%------------------------------------------------
+% RESUMEN
+%------------------------------------------------
+
+\begin{abstract}
+Presentamos un marco de cosmología estocástica con memoria finita en el que la
+ecuación de estado de la energía oscura exhibe oscilaciones log-amortiguadas
+impulsadas por ruido estocástico autoconsistente. La ecuación de estado efectiva
+se parametriza como
+\begin{equation}
+    w(z) = -1 + A \, e^{-z/z_\tau}
+    \cos\bigl[ \omega \ln(1+z) + \delta \bigr],
+\end{equation}
+donde $A$ es la amplitud de oscilación, $\omega$ es una frecuencia en corrimiento
+al rojo logarítmico, $\delta$ es una fase, y $z_\tau = c \Hzero \tau$ codifica un
+tiempo de memoria finito $\tau$. A nivel microscópico, el modelo se deriva de dos
+campos escalares interactuantes sujetos a ruido de Ornstein--Uhlenbeck con
+intensidad proporcional a la temperatura de Gibbons--Hawking $\TGH = H / 2\pi$,
+modulada por una función ventana geométrica que suprime el ruido a alto corrimiento
+al rojo.
+
+Definimos el Modelo~2.1.1 como la implementación observacionalmente viable más
+conservadora de este marco: la amplitud se restringe a $A \leq 0.03$ y la
+intensidad de ruido se regula mediante un corte sigmoidal $S(z)$ activado
+alrededor de $z_c \sim 4$. Esto asegura compatibilidad con restricciones actuales
+de supernovas tipo Ia, BAO y el CMB, mientras retiene una estructura temporal
+no trivial en $w(z)$ a bajo corrimiento al rojo. El modelo es explícitamente
+falsable mediante comparación bayesiana con $\Lambda$CDM usando datos públicos
+(Pantheon+ y conjuntos de datos posteriores), y se acompaña de un protocolo de
+validación abierto.
+
+Este artículo consolida el marco teórico, la parametrización observacional y el
+protocolo de validación empírica en un solo preprint autocontenido destinado a
+escrutinio y extensión independientes.
+\end{abstract}
+
+%------------------------------------------------
+\section{Introducción}
+%------------------------------------------------
+
+El descubrimiento de la aceleración cósmica \cite{Riess:1998cb,Perlmutter:1998np}
+sigue siendo uno de los enigmas centrales de la cosmología moderna. Aunque la
+constante cosmológica $\Lambda$ proporciona un excelente ajuste fenomenológico a
+los datos actuales \cite{Planck:2018vyg,Brout:2022vxf}, deja sin resolver preguntas
+fundamentales sobre el origen y la dinámica de la energía oscura. Una amplia familia
+de alternativas introduce grados de libertad dinámicos, gravedad modificada o
+parametrizaciones fenomenológicas de la ecuación de estado de la energía oscura
+\cite{Copeland:2006wr,Tsujikawa:2013fta,Wetterich:1994bg}.
+
+En este trabajo exploramos una dirección diferente, motivada por procesos
+estocásticos y efectos de memoria finita. En lugar de tratar la energía oscura como
+un fluido estático o un campo escalar puramente determinista, consideramos un marco
+donde su ecuación de estado efectiva $w(z)$ exhibe oscilaciones amortiguadas
+impulsadas por ruido coloreado con tiempo de correlación finito. La idea clave es
+que la interacción entre memoria y fluctuación puede dejar una pequeña pero
+potencialmente observable estructura temporal en la historia de expansión tardía.
+
+El presente artículo consolida y extiende notas previas sobre \emph{cosmología
+estocástica con memoria finita} en un solo preprint autocontenido. (i) Formulamos
+el modelo estocástico subyacente en términos de campos escalares acoplados a una
+temperatura de Gibbons--Hawking, (ii) derivamos una parametrización log-oscilatoria
+efectiva para $w(z)$, (iii) definimos una implementación observacional conservadora
+(Modelo~2.1.1), y (iv) presentamos un protocolo explícito de validación empírica
+basado en datos públicamente disponibles.
+
+A lo largo de este trabajo adoptamos unidades naturales $c = \hbar = k_{\mathrm{B}} = 8\pi G = 1$
+salvo que se indique lo contrario.
+
+%------------------------------------------------
+\section{Energía Oscura Estocástica con Memoria Finita}
+%------------------------------------------------
+
+\subsection{Marco microscópico}
+
+Consideramos un fondo plano de Friedmann--Robertson--Walker (FRW) con factor de
+escala $a(t)$ y tasa de Hubble $H = \dot{a}/a$. La energía oscura se modela como
+un fluido efectivo emergente de dos campos escalares interactuantes $\phi$ y $\chi$,
+sujetos a fuerzas estocásticas coloreadas. Las ecuaciones para pequeñas desviaciones
+de la ecuación de estado efectiva $w$ del valor de constante cosmológica $-1$ pueden
+escribirse esquemáticamente como procesos de Ornstein--Uhlenbeck
+\cite{Uhlenbeck:1930,Gardiner:2009}:
+\begin{equation}
+    \dot{\zeta}_\phi = -\frac{\zeta_\phi}{\tau_\phi}
+    + \sqrt{\frac{2 \Gamma_\phi \TGH}{\tau_\phi^2}} \, \xi_\phi(t),
+    \qquad
+    \dot{\zeta}_\chi = -\frac{\zeta_\chi}{\tau_\chi}
+    + \sqrt{\frac{2 \Gamma_\chi \TGH}{\tau_\chi^2}} \, \xi_\chi(t),
+    \label{eq:OU-original}
+\end{equation}
+donde $\zeta_{\phi,\chi}$ codifican desviaciones en el sector efectivo de energía
+oscura, $\tau_{\phi,\chi}$ son tiempos de memoria (correlación), $\Gamma_i$ son
+acoplamientos adimensionales, y $\xi_i(t)$ son términos independientes de ruido
+blanco gaussiano con
+\begin{equation}
+    \langle \xi_i(t) \rangle = 0, \qquad
+    \langle \xi_i(t) \xi_j(t') \rangle = \delta_{ij}\, \delta(t-t').
+\end{equation}
+La intensidad del ruido es proporcional a la temperatura de Gibbons--Hawking
+\cite{Gibbons:1977mu}
+\begin{equation}
+    \TGH = \frac{H}{2\pi},
+\end{equation}
+reflejando el acoplamiento entre el sector de energía oscura y la termodinámica del
+horizonte. En la implementación más simple tomamos $\Gamma_i = \alpha_i 3 H$ con
+$\alpha_i = \mathcal{O}(1)$, de modo que la amplitud del ruido está autoconsistentemente
+vinculada a la tasa de expansión.
+
+\subsection{Corte geométrico de ruido}
+
+En la versión original del modelo, el forzamiento estocástico \eqref{eq:OU-original}
+permanece activo a corrimiento al rojo arbitrariamente alto, lo que puede conducir
+a fluctuaciones excesivas incompatibles con la suavidad observada del CMB
+\cite{Planck:2018vyg}. Para evitar esto, introducimos un \emph{corte geométrico}
+que suprime el ruido en el Universo temprano y lo activa solo cuando la energía
+oscura se vuelve dinámicamente relevante.
+
+Definimos una temperatura efectiva
+\begin{equation}
+    T_{\mathrm{eff}}(z) \equiv \TGH(z)\, S(z),
+\end{equation}
+donde $S(z)$ es una función ventana adimensional. En la realización mínima
+(Modelo~2.1.1) adoptamos un perfil sigmoidal suave
+\begin{equation}
+    S(z) = \frac{1}{1 + \exp\bigl[(z - z_c)/\Delta z\bigr]},
+    \label{eq:Sz-sigmoid}
+\end{equation}
+con parámetros de transición $z_c \sim 4$ y $\Delta z \sim 0.5$.
+
+La Figura~\ref{fig:cutoff} muestra el comportamiento de $S(z)$ para diferentes valores
+de $z_c$. Esta elección asegura que:
+\begin{itemize}
+    \item A alto corrimiento al rojo ($z \gg z_c$), $S(z) \to 0$ y el ruido se apaga efectivamente.
+    \item Alrededor de $z \simeq z_c$, $S(z) \simeq 1/2$ y el impulso estocástico se activa suavemente.
+    \item A bajo corrimiento al rojo ($z \ll z_c$), $S(z) \to 1$ y la dinámica estocástica completa está activa.
+\end{itemize}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{figura2_cutoff_geometrico.pdf}
+\caption{Ventana de supresión geométrica de ruido $S(z)$. La configuración nominal
+($z_c=4.0$, $\Delta z=0.5$, azul sólida) activa el ruido suavemente en tiempos tardíos
+mientras preserva la compatibilidad con el CMB. Los escenarios de activación temprana/tardía
+(discontinuas) ilustran la sensibilidad de parámetros.}
+\label{fig:cutoff}
+\end{figure}
+
+Las ecuaciones modificadas de Ornstein--Uhlenbeck se convierten en
+\begin{align}
+    \dot{\zeta}_\phi &= -\frac{\zeta_\phi}{\tau_\phi}
+    + S\bigl(z(t)\bigr) \sqrt{\frac{2 \Gamma_\phi \TGH(t)}{\tau_\phi^2}} \, \xi_\phi(t),
+    \label{eq:OU-cutoff-phi}
+    \\
+    \dot{\zeta}_\chi &= -\frac{\zeta_\chi}{\tau_\chi}
+    + S\bigl(z(t)\bigr) \sqrt{\frac{2 \Gamma_\chi \TGH(t)}{\tau_\chi^2}} \, \xi_\chi(t),
+    \label{eq:OU-cutoff-chi}
+\end{align}
+donde la dependencia temporal explícita $z(t)$ está determinada por la expansión
+de fondo.
+
+Para propósitos numéricos, a menudo es conveniente reescribir el sistema en términos
+del corrimiento al rojo $z$ como variable de evolución, usando
+\begin{equation}
+    \frac{\dd z}{\dd t} = -H(z)\,(1+z).
+\end{equation}
+Las ecuaciones estocásticas se transforman entonces en
+\begin{align}
+    \frac{\dd \zeta_\phi}{\dd z} &=
+    \frac{1}{H(z)\,(1+z)}\left[
+        -\frac{\zeta_\phi}{\tau_\phi}
+        + S(z) \sqrt{\frac{2 \Gamma_\phi \TGH(z)}{\tau_\phi^2}}\, \xi_\phi(z)
+    \right],
+    \\
+    \frac{\dd \zeta_\chi}{\dd z} &=
+    \frac{1}{H(z)\,(1+z)}\left[
+        -\frac{\zeta_\chi}{\tau_\chi}
+        + S(z) \sqrt{\frac{2 \Gamma_\chi \TGH(z)}{\tau_\chi^2}}\, \xi_\chi(z)
+    \right],
+\end{align}
+con ruido normalizado en corrimiento al rojo $\xi_i(z)$ satisfaciendo
+\begin{equation}
+    \xi_i(z) = \sqrt{H(z)\,(1+z)}\, \tilde{\xi}_i(z), \qquad
+    \langle \tilde{\xi}_i(z)\tilde{\xi}_j(z') \rangle = \delta_{ij}\, \delta(z-z').
+\end{equation}
+
+%------------------------------------------------
+\section{Ecuación de Estado Log-Oscilatoria Efectiva}
+%------------------------------------------------
+
+\subsection{Parametrización}
+
+El efecto de grano grueso de la dinámica estocástica descrita arriba puede capturarse
+mediante una ecuación de estado efectiva para la energía oscura de la forma
+\begin{equation}
+    w(z) = -1 + A \, e^{-z/z_\tau}
+    \cos\bigl[ \omega \ln(1+z) + \delta \bigr],
+    \label{eq:wz-param}
+\end{equation}
+donde:
+\begin{itemize}
+    \item $A$ es la amplitud de las oscilaciones,
+    \item $\omega$ es la frecuencia de oscilación en corrimiento al rojo logarítmico,
+    \item $\delta$ es una fase inicial,
+    \item $z_\tau$ codifica la profundidad de memoria finita vía $z_\tau = c\, \Hzero \tau$.
+\end{itemize}
+El factor exponencial $e^{-z/z_\tau}$ asegura que las oscilaciones estén amortiguadas
+hacia alto corrimiento al rojo, consistente con la supresión de efectos estocásticos
+en el Universo temprano.
+
+La Figura~\ref{fig:wz} ilustra el comportamiento de $w(z)$ para diferentes valores
+de la amplitud $A$, mostrando oscilaciones log-suaves alrededor del valor $\Lambda$CDM
+$w=-1$.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{figura1_wz_amplitudes.pdf}
+\caption{Ecuación de estado $w(z)$ para diferentes amplitudes de oscilación. El modelo
+exhibe desviaciones log-periódicas amortiguadas de $\Lambda$CDM ($A=0$, negra discontinua).
+La cota conservadora $A \leq 0.03$ (roja) asegura viabilidad observacional mientras
+preserva la estructura de memoria finita.}
+\label{fig:wz}
+\end{figure}
+
+En análisis bayesianos recomendamos una prior gaussiana truncada para $A$,
+\begin{equation}
+    A \sim \mathcal{N}(0,\sigma_A^2) \quad \text{truncada a} \quad [0, A_{\max}],
+\end{equation}
+con $A_{\max} \equiv 0.03$ (ver Sección~\ref{sec:model-211}). Esto favorece
+desviaciones suaves de $w=-1$ al nivel de pocos por ciento, en acuerdo con cotas
+observacionales actuales, mientras preserva la estructura implicada por el modelo
+microscópico.
+
+\subsection{Evolución de fondo}
+
+El fluido de energía oscura efectivo entra en la ecuación de Friedmann mediante
+\begin{equation}
+    H^2(z) = \Hzero^2 \left[
+        \Omegam (1+z)^3 + \Omegal \exp\left(
+        3 \int_0^z \frac{1 + w(z')}{1+z'} \dd z' \right)
+    \right],
+    \label{eq:Friedmann-wz}
+\end{equation}
+donde la planitud implica $\Omegal = 1 - \Omegam$.
+Para parámetros dados $(A,\omega,\delta,\tau\Hzero)$, la integral en
+Ec.~\eqref{eq:Friedmann-wz} puede evaluarse numéricamente interpolando
+$w(z)$ en una grilla de corrimiento al rojo apropiada.
+
+La distancia de luminosidad sigue como
+\begin{equation}
+    d_L(z) = c (1+z) \int_0^z \frac{\dd z'}{H(z')},
+\end{equation}
+conduciendo al módulo de distancia observable
+\begin{equation}
+    \mu(z) = 5 \log_{10} \left( \frac{d_L(z)}{\text{Mpc}} \right) + 25.
+\end{equation}
+
+%------------------------------------------------
+\section{Modelo 2.1.1: Amplitud Reducida y Corte Geométrico}
+\label{sec:model-211}
+%------------------------------------------------
+
+El Modelo~2.1.1 se define como una realización observacionalmente conservadora del
+marco de cosmología estocástica con memoria finita, incorporando:
+\begin{enumerate}
+    \item Un rango de amplitud restringido
+    \begin{equation}
+        0 \leq A \leq A_{\max}, \qquad A_{\max} = 0.03,
+    \end{equation}
+    con una prior gaussiana truncada $\sigma_A \simeq 0.02$.
+    \item Un corte geométrico $S(z)$ en la intensidad de ruido, como en
+    Ec.~\eqref{eq:Sz-sigmoid}, con valores fiduciales
+    \begin{equation}
+        z_c \sim 4, \qquad \Delta z \sim 0.5.
+    \end{equation}
+\end{enumerate}
+
+Estas elecciones están motivadas por las siguientes consideraciones:
+\begin{itemize}
+    \item Oscilaciones de gran amplitud ($A \gtrsim 0.1$) están fuertemente desfavorecidas
+    por restricciones existentes de supernovas tipo Ia \cite{Brout:2022vxf} y BAO
+    \cite{DESI:2024mwx}.
+    \item Se requiere un corte a alto corrimiento al rojo en el forzamiento estocástico
+    para evitar estructura excesiva en el espectro de potencia del CMB.
+    \item Una transición suave en $S(z)$ reduce artefactos numéricos y corresponde a
+    una activación físicamente gradual del ruido a medida que la energía oscura se
+    vuelve dinámicamente relevante.
+\end{itemize}
+
+En la práctica, el Modelo~2.1.1 puede especificarse completamente mediante el vector
+de parámetros
+\begin{equation}
+    \bm{\theta} = \{A, \omega, \delta, \tau\Hzero, \Omegam, \Hzero\},
+\end{equation}
+con priors tales como
+\begin{align}
+    &0 \leq A \leq 0.03, \\
+    &1 \lesssim \omega \lesssim 5, \\
+    &0 \leq \delta < 2\pi, \\
+    &0.5 \lesssim \tau\Hzero \lesssim 5, \\
+    &\Omegam \sim \mathcal{N}(0.315, 0.02^2), \\
+    &\Hzero \sim \mathcal{N}(70\,\text{km/s/Mpc}, 3^2).
+\end{align}
+Estos rangos pueden refinarse en análisis futuros.
+
+%------------------------------------------------
+\section{Ventanas de Resiliencia y la Conjetura de Memoria Finita}
+%------------------------------------------------
+
+\subsection{Parámetro de estabilidad emergente}
+
+El análisis numérico del sistema estocástico revela un parámetro adimensional
+emergente que controla la estabilidad dinámica:
+\begin{equation}
+    \Rmem = \tau \Omega,
+    \label{eq:R-definition}
+\end{equation}
+donde $\tau$ es el tiempo de correlación del ruido de Ornstein--Uhlenbeck y $\Omega$
+es la frecuencia de oscilación característica. Este producto codifica el número de
+períodos de oscilación sobre los cuales el sistema retiene memoria.
+
+Simulaciones Monte Carlo de las ecuaciones estocásticas completas sugieren que el
+sistema exhibe varianza mínima y estabilidad máxima cuando
+\begin{equation}
+    \boxed{0.5 \lesssim \Rmem \lesssim 3.5}
+    \label{eq:resilience-window}
+\end{equation}
+como se ilustra en la Figura~\ref{fig:valley}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\textwidth]{figura3_valle_resiliencia.pdf}
+\caption{Valle de resiliencia en el espacio de parámetros $(\tau H_0, \omega)$. La superficie
+muestra la varianza del atractor calculada a partir de realizaciones Monte Carlo. La línea roja
+marca la trayectoria óptima $R = \tau H_0 \cdot \omega = 2$. Las barras negras indican
+la banda de resiliencia $R \in [0.5, 3.5]$ donde la varianza se minimiza.}
+\label{fig:valley}
+\end{figure}
+
+\subsection{Generalización tentativa}
+
+La existencia de una banda preferida en $\Rmem$ sugiere un posible principio general
+para sistemas disipativos con memoria y oscilación. Conjeturamos --- tentativamente
+y sujeto a pruebas empíricas en múltiples dominios --- que sistemas caracterizados
+por un tiempo de correlación finito $\tau$ y una frecuencia dominante $\Omega$ logran
+resiliencia máxima (definida operacionalmente como varianza mínima, coherencia máxima,
+o exponente de Lyapunov negativo) cuando
+\begin{equation}
+    \Rmem = \tau \Omega \in [0.5,\, 3.5].
+\end{equation}
+Esta \emph{Ley de Memoria Finita} (LMF) no se presenta como un principio universal
+establecido sino como una observación empírica del modelo cosmológico que invita a
+validación trans-dominio.
+
+Enfatizamos que:
+\begin{itemize}
+    \item La validación cosmológica presentada aquí es necesaria pero no suficiente
+    para establecer la LMF como principio general.
+    \item La extensión a otros sistemas (oscilaciones neuronales, dinámica de aprendizaje
+    automático, turbulencia de fluidos) requiere experimentos controlados independientes.
+    \item La conjetura es explícitamente falsable: si múltiples dominios muestran
+    estabilidad óptima fuera de $[0.5, 3.5]$ con alta significancia estadística,
+    la LMF queda refutada.
+\end{itemize}
+
+%------------------------------------------------
+\section{Predicciones Observacionales}
+%------------------------------------------------
+
+El Modelo~2.1.1 produce varias predicciones cualitativas y cuantitativas:
+
+\begin{enumerate}
+    \item \textbf{Oscilaciones suaves en $w(z)$.} Las desviaciones de $w=-1$ están al
+    nivel de pocos por ciento, con oscilaciones concentradas en $z \lesssim 2$.
+
+    \item \textbf{Compatibilidad con el CMB a alto corrimiento al rojo.} El corte geométrico
+    $S(z)$ suprime efectos estocásticos para $z \gtrsim 4$, evitando conflicto con la
+    suavidad del espectro primordial \cite{Planck:2018vyg}.
+
+    \item \textbf{Señal ISW (Sachs--Wolfe Integrado) tardía.}
+    El $w(z)$ modulado induce pequeñas características oscilatorias en el crecimiento del
+    potencial gravitacional a $z \lesssim 2$, potencialmente imprimiendo estructura en
+    correlaciones cruzadas CMB--LSS.
+
+    \item \textbf{Banda de memoria finita.} La posterior bayesiana para $\tau\Hzero$ y
+    $\omega$ debería concentrarse cerca de la ventana de resiliencia, con el producto
+    $\Rmem = \tau\Hzero \cdot \omega$ alcanzando un pico en $[0.5, 3.5]$ si el modelo
+    es correcto.
+
+    \item \textbf{Falsabilidad vía comparación bayesiana.} Un análisis conjunto de
+    SNe Ia Pantheon+ \cite{Brout:2022vxf}, BAO \cite{DESI:2024mwx}, y restricciones
+    del CMB a bajo-$z$ puede falsear el modelo si el Criterio de Información Bayesiano
+    (BIC) favorece $\Lambda$CDM por $\Delta\mathrm{BIC} > 10$ de manera robusta.
+\end{enumerate}
+
+%------------------------------------------------
+\section{Protocolo de Validación Empírica (Resumen)}
+%------------------------------------------------
+
+Un protocolo operacional completo para validar el modelo usando datos públicos se
+provee en una implementación complementaria (a ser liberada en GitHub). Aquí resumimos
+los pasos principales para el análisis viable mínimo con supernovas Pantheon+
+\cite{Brout:2022vxf}:
+
+\begin{enumerate}
+    \item Descargar y limpiar el conjunto de datos Pantheon+ (1701 SNe Ia, $0.01 < z < 2.3$).
+    \item Implementar el modelo $w(z)$ como en Ec.~\eqref{eq:wz-param} y calcular
+    $\mu(z)$ para cada conjunto de parámetros $\bm{\theta}$, usando integración numérica
+    de Ec.~\eqref{eq:Friedmann-wz}.
+    \item Definir una verosimilitud gaussiana
+    \begin{equation}
+        \ln \mathcal{L}(\bm{\theta}) =
+        -\frac{1}{2}\sum_i \left(
+            \frac{\mu_i^{\mathrm{obs}} - \mu(z_i; \bm{\theta})}{\sigma_i}
+        \right)^2,
+    \end{equation}
+    con $\sigma_i$ las incertidumbres observacionales.
+    \item Muestrear la posterior $\mathcal{P}(\bm{\theta}\mid \text{datos})$ usando
+    un muestreador MCMC como \texttt{emcee} \cite{ForemanMackey:2013}.
+    \item Calcular el $\chi^2$ de mejor ajuste y el BIC tanto para Modelo~2.1.1 como
+    para $\Lambda$CDM, y evaluar $\Delta \mathrm{BIC}$.
+    \item Inspeccionar la posterior para $A$, $\tau\Hzero$, $\omega$ para verificar si
+    la predicción de memoria finita $\Rmem \in [0.5, 3.5]$ es soportada.
+\end{enumerate}
+
+Un resultado negativo (por ejemplo, $A$ consistente con cero y fuerte preferencia por
+$\Lambda$CDM) \emph{refutaría} la formulación actual del modelo y se considera tan
+valiosa científicamente como una detección positiva.
+
+%------------------------------------------------
+\section{Discusión}
+%------------------------------------------------
+
+El marco de cosmología estocástica con memoria finita se sitúa en la interfaz entre
+cosmología, procesos estocásticos y sistemas dinámicos con retroalimentación. Al
+introducir un tiempo de correlación explícito $\tau$ e intensidad de ruido autoconsistente
+proporcional a $\TGH$, el modelo sugiere que la aceleración cósmica tardía puede exhibir
+pequeñas estructuras temporales en lugar de ser exactamente constante.
+
+Más allá de la cosmología, la misma combinación de memoria finita y dinámica oscilatoria
+aparece en múltiples dominios, desde osciladores amortiguados hasta oscilaciones corticales
+y optimización de aprendizaje automático. Esto motiva la conjetura más amplia de la Ley
+de Memoria Finita, en la cual el producto adimensional $\Rmem = \tau \Omega$ yace en una
+banda de resiliencia $\Rmem \in [0.5, 3.5]$ para una amplia clase de sistemas. El presente
+trabajo se enfoca en el sector cosmológico; la validación multi-dominio se difiere a
+estudios futuros.
+
+%------------------------------------------------
+\section{Limitaciones y Trabajo Futuro}
+%------------------------------------------------
+
+Este trabajo tiene varias limitaciones importantes:
+
+\begin{itemize}
+    \item El análisis presente se enfoca en la historia de expansión de fondo. Un
+    tratamiento completo incluyendo perturbaciones y anisotropías del CMB aún no se
+    ha llevado a cabo.
+    \item El potencial de los campos escalares subyacentes y sus acoplamientos se
+    tratan efectivamente; una derivación lagrangiana microscópica completa queda abierta.
+    \item Solo se consideran priors mínimas y un conjunto de datos restringido (SNe Ia
+    Pantheon+) en el protocolo empírico base. Una evaluación robusta requiere combinar
+    datos de BAO, CMB, crecimiento de estructura y lentes gravitacionales.
+    \item La conexión con la Ley de Memoria Finita más amplia a través de dominios
+    permanece conjetural y se basa en modelos de juguete y análisis dimensional.
+\end{itemize}
+
+El trabajo futuro abordará estas limitaciones mediante: (i) implementar el modelo en
+solucionadores de Boltzmann para confrontar datos del CMB y LSS, (ii) explorar formas
+alternativas del corte geométrico $S(z)$, (iii) realizar un análisis bayesiano conjunto
+con conjuntos de datos de DESI, Planck y lentes débiles, y (iv) extender el análisis de
+memoria finita a experimentos controlados en otros sistemas dinámicos.
+
+%------------------------------------------------
+\section{Conclusiones}
+%------------------------------------------------
+
+Hemos presentado un modelo autoconsistente de cosmología estocástica con memoria finita
+en el que la energía oscura exhibe oscilaciones log-amortiguadas en su ecuación de estado,
+impulsadas por ruido acoplado a Gibbons--Hawking con un corte geométrico. El Modelo~2.1.1
+observacionalmente conservador restringe la amplitud de oscilación y regula el ruido a
+alto corrimiento al rojo, produciendo un candidato viable para pruebas empíricas contra
+datos actuales y futuros.
+
+El marco es explícitamente falsable y está diseñado para ser probado por investigadores
+independientes usando conjuntos de datos públicos y código de fuente abierta. Independientemente
+del resultado, el modelo proporciona un ejemplo concreto de cómo pueden integrarse efectos
+de memoria finita en la dinámica cosmológica, y puede inspirar enfoques similares en otras
+áreas de la física y sistemas complejos.
+
+%------------------------------------------------
+\section*{Agradecimientos}
+%------------------------------------------------
+
+El autor agradece a la comunidad de computación científica de código abierto por herramientas
+como \texttt{numpy}, \texttt{scipy}, \texttt{matplotlib}, y \texttt{emcee}, que hacen posible
+la investigación independiente. Este trabajo no recibió financiamiento externo y se libera con
+la intención explícita de ser libremente probado, criticado y extendido.
+
+%------------------------------------------------
+\section*{Disponibilidad de Datos y Código}
+%------------------------------------------------
+
+Una implementación de referencia del modelo, junto con scripts para reproducir el protocolo
+de validación mínima con supernovas Pantheon+, se hará públicamente disponible en
+\url{https://github.com/cisnerosmusic} y se archivará con un DOI en Zenodo. Todo el código
+y documentación se liberan bajo la Licencia MIT.
+
+Documentación completa del proyecto: \url{https://ernestocisneros.art/cosmology-physics}
+
+%------------------------------------------------
+\bibliographystyle{unsrt}
+\bibliography{cosmologia_estocastica}
+
+\end{document}
