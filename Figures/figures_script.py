@@ -228,33 +228,4 @@ def plot_resilience_valley():
     print("✓ Figura 3 generada: figura3_valle_resiliencia.pdf/.png")
     plt.close()
 
-# ============================================================
-# MAIN: Generar todas las figuras
-# ============================================================
 
-if __name__ == "__main__":
-    print("\n" + "="*60)
-    print("  Generando Figuras para Paper v3.2")
-    print("  Cosmología Estocástica con Memoria Finita")
-    print("="*60 + "\n")
-    
-    print("Generando Figura 1: w(z) diferentes amplitudes...")
-    plot_wz_different_amplitudes()
-    
-    print("\nGenerando Figura 2: Cutoff geométrico S(z)...")
-    plot_geometric_cutoff()
-    
-    print("\nGenerando Figura 3: Valle de Resiliencia 3D...")
-    plot_resilience_valley()
-    
-    print("\n" + "="*60)
-    print("  ✓ Todas las figuras generadas exitosamente")
-    print("  Ubicación: /mnt/user-data/outputs/")
-    print("  Formatos: PDF (para LaTeX) + PNG (para web)")
-    print("="*60 + "\n")
-    
-    print("Archivos generados:")
-    print("  - figura1_wz_amplitudes.pdf/.png")
-    print("  - figura2_cutoff_geometrico.pdf/.png")
-    print("  - figura3_valle_resiliencia.pdf/.png")
-    print("\nListo para incrustar en LaTeX v3.2\n")
