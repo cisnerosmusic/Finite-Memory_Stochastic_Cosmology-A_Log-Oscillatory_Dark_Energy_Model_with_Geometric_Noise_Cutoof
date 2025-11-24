@@ -28,7 +28,8 @@ Incluidas tal como se usan en el documento LaTeX:
 
 ## 🔗 DOI y Recursos Relacionados
 
-- **Zenodo DOI (ORO):** `10.5281/zenodo.17686852`  
+- **Zenodo DOI (ORO):** `10.5281/zenodo.17686852`
+- **ORCID:** https://orcid.org/0009-0002-2833-1787
 - **Sitio web del proyecto:** https://ernestocisneros.art/cosmology-physics  
 - **Repositorio principal:**  
   https://github.com/cisnerosmusic/Finite-Memory_Stochastic_Cosmology-A_Log-Oscillatory_Dark_Energy_Model_with_Geometric_Noise_Cutoof  
@@ -61,6 +62,4 @@ Este folder organiza los materiales finales listos para:
 - Presentación y archivos suplementarios  
 - Preparación para arXiv
 
----
 
-Si agregas nuevos PDFs (por ejemplo, anexos, validaciones adicionales o versiones futuras), solo hay que listarlos aquí para mantener la documentación completa.
