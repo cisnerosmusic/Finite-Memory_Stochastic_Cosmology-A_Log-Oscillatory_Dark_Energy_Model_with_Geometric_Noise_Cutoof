@@ -10,9 +10,9 @@ by **Ernesto Cisneros Cino**.
 The model proposes a dark energy equation of state with **damped log-periodic oscillations** arising from **finite-memory stochastic dynamics** driven by Ornstein–Uhlenbeck noise, modulated by a **geometric cutoff** suppressing high-redshift fluctuations.  
 It introduces the observationally conservative **Model 2.1.1** and the concept of **Resilience Windows**, characterized by the dimensionless stability parameter:
 
-\[
+$$
 R = \tau \Omega \in [0.5, 3.5].
-\]
+$$
 
 This framework is fully falsifiable and includes an open Bayesian validation pipeline.
 
